@@ -21,9 +21,11 @@ body, html {
 #play-area {
     flex: 1;
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: repeat(3, 1fr);
+    grid-template-columns: repeat(3, minmax(100px, 1fr));
+    grid-template-rows: repeat(3, minmax(100px, 1fr));
     border-bottom: 1px solid #000;
+    gap: 5px;
+    background-color: antiquewhite;
 }
 
 .cell {
@@ -33,6 +35,20 @@ body, html {
     align-items: center;
     cursor: pointer;
     font-size: 2em;
+}
+.grid-cell {
+    width: 100px;
+    height: 100px;
+    border: 1px solid #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+.cell:hover {
+    background-color: #783535;
 }
 
 #controls {
