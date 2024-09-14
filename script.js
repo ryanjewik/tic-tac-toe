@@ -1,5 +1,5 @@
 // script.js
-
+let gameActive = true;
 let board = [
     ['', '', ''],
     ['', '', ''],
@@ -15,81 +15,123 @@ document.addEventListener('DOMContentLoaded', (event) => {
     });
 
     createGrid();
+    addHoverEffect();
 });
 
 function resetGame() {
     board = [
         ['', '', ''],
-        ['', '', '']
+        ['', '', ''],
         ['', '', '']
     ];
+    gameActive = true;
     currentPlayer = 'X';
-    const playArea = document.getElementById('play-area');
-    playArea.innerHTML = ''; // Clear the play area
-    createGrid();
+    const cells = document.querySelectorAll('.cell');
+    cells.forEach(cell => {
+        cell.textContent = '';
+        cell.classList.remove('x-cell', 'o-cell', 'winning-cell');
+    });
+    addHoverEffect();
 }
 
 function createGrid() {
     const playArea = document.getElementById('play-area');
     playArea.innerHTML = ''; // Clear any existing content
 
-    const gridSize = 3; // 3x3 grid
-    for (let row = 0; row < gridSize; row++) {
+    for (let row = 0; row < 3; row++) {
         const rowDiv = document.createElement('div');
         rowDiv.classList.add('row');
-        for (let col = 0; col < gridSize; col++) {
-            const cellDiv = document.createElement('div');
-            cellDiv.classList.add('cell');
-            cellDiv.dataset.row = row;
-            cellDiv.dataset.col = col;
-            cellDiv.addEventListener('click', handleCellClick);
-            rowDiv.appendChild(cellDiv);
+        for (let col = 0; col < 3; col++) {
+            const cell = document.createElement('div');
+            cell.classList.add('cell');
+            cell.dataset.row = row;
+            cell.dataset.col = col;
+            cell.addEventListener('click', handleCellClick);
+            rowDiv.appendChild(cell);
         }
         playArea.appendChild(rowDiv);
     }
 }
 
 function handleCellClick(event) {
+    if (!gameActive) return;
+
     const cell = event.target;
     const row = cell.dataset.row;
     const col = cell.dataset.col;
 
-    if (board[row][col] === '') {
-        board[row][col] = currentPlayer;
-        cell.textContent = currentPlayer;
-
-        if (checkWin(row, col)) {
-            alert(`${currentPlayer} wins!`);
-            resetGame();
-        } else if (board.flat().every(cell => cell !== '')) {
-            alert('It\'s a draw!');
-            resetGame();
-        } else {
-            currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
-        }
+    // Check if the cell is already filled
+    if (cell.textContent !== '') {
+        return;
     }
+
+    // Update the cell with the current player's symbol
+    cell.textContent = currentPlayer;
+
+    // Add the class for 'X' or 'O' based on the current player
+    if (currentPlayer === 'X') {
+        cell.classList.add('x-cell');
+    } else if (currentPlayer === 'O') {
+        cell.classList.add('o-cell');
+    }
+
+    // Update the board state
+    board[row][col] = currentPlayer;
+
+    // Check for a win
+    const winningCells = checkWin(row, col);
+    if (winningCells) {
+        alert(`${currentPlayer} wins!`);
+        gameActive = false;
+        highlightWinningCells(winningCells);
+        removeHoverEffect();
+        return;
+    }
+
+    // Switch players
+    currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
 }
 
 function checkWin(row, col) {
     // Check row
     if (board[row].every(cell => cell === currentPlayer)) {
-        return true;
+        return [[row, 0], [row, 1], [row, 2]];
     }
 
     // Check column
     if (board.every(row => row[col] === currentPlayer)) {
-        return true;
+        return [[0, col], [1, col], [2, col]];
     }
 
     // Check diagonal (top-left to bottom-right)
-    if (row === col && board.every((row, index) => row[index] === currentPlayer)) {
-        return true;
+    if (row === col && board[0][0] === currentPlayer && board[1][1] === currentPlayer && board[2][2] === currentPlayer) {
+        return [[0, 0], [1, 1], [2, 2]];
     }
 
     // Check diagonal (top-right to bottom-left)
-    if (parseInt(row) + parseInt(col) === 2 && board.every((row, index) => row[2 - index] === currentPlayer)) {
-        return true;
+    if (row + col === 2 && board[0][2] === currentPlayer && board[1][1] === currentPlayer && board[2][0] === currentPlayer) {
+        return [[0, 2], [1, 1], [2, 0]];
     }
 
-    return false;
+    return null;
+}
+
+function highlightWinningCells(cells) {
+    cells.forEach(([row, col]) => {
+        const cell = document.querySelector(`[data-row='${row}'][data-col='${col}']`);
+        cell.classList.add('winning-cell');
+    });
+}
+
+function removeHoverEffect() {
+    const cells = document.querySelectorAll('.cell');
+    cells.forEach(cell => {
+        cell.classList.remove('cell-hover');
+    });
+}
+function addHoverEffect() {
+    const cells = document.querySelectorAll('.cell');
+    cells.forEach(cell => {
+        cell.classList.add('cell-hover');
+    });
 }
