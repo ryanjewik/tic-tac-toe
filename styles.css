@@ -94,3 +94,43 @@ body, html {
     background-color: #7025b6; /* Neon pink background for winning cells */
     color: #ff42a0; /* Dark text color for contrast */
 }
+#winner-message {
+    display: none; /* Hide the element initially */
+    font-size: 24px; /* Larger font size */
+    font-weight: bold; /* Bold text */
+    color: #ffffff; /* White text color */
+    background-color: #ff0055; /* Neon pink background */
+    padding: 10px 20px; /* Padding for spacing */
+    border: 3px solid #00ffea; /* Neon cyan border */
+    border-radius: 10px; /* Rounded corners */
+    text-align: center; /* Center the text */
+    margin-top: 20px; /* Space above the message */
+    font-family: 'Press Start 2P', cursive; /* Use the same retro font */
+    transition: background-color 0.3s, color 0.3s; /* Smooth transition for color changes */
+}
+#score-tally {
+    display: flex; /* Use flexbox for horizontal alignment */
+    justify-content: center; /* Center the score elements horizontally */
+    gap: 20px; /* Space between the score elements */
+    font-size: 14px; /* Reduced font size for the score tally */
+    color: #ffffff; /* White text color */
+    text-align: center; /* Center the text */
+    margin-top: 20px; /* Space above the score tally */
+    font-family: 'Press Start 2P', cursive; /* Use the same retro font */
+}
+#score-tally .score {
+    padding: 10px 20px; /* Padding for spacing */
+    border-radius: 10px; /* Rounded corners */
+}
+#score-tally .x-score {
+    background-color: #ff0055; /* Neon pink background for X score */
+    border: 3px solid #00ffea; /* Neon cyan border */
+}
+#score-tally .o-score {
+    background-color: #00ffea; /* Neon cyan background for O score */
+    border: 3px solid #ff0055; /* Neon cyan border */
+}
+#score-tally .score span {
+    display: block; /* Make the span a block element */
+    margin-top: 5px; /* Add vertical space between the label and the counter */
+}

@@ -6,6 +6,9 @@ let board = [
     ['', '', '']
 ];
 let currentPlayer = 'X';
+let xWins = 0;
+let oWins = 0;
+
 
 document.addEventListener('DOMContentLoaded', (event) => {
     const resetButton = document.getElementById('reset-button');
@@ -31,6 +34,9 @@ function resetGame() {
         cell.textContent = '';
         cell.classList.remove('x-cell', 'o-cell', 'winning-cell');
     });
+    const winnerMessage = document.getElementById('winner-message');
+    winnerMessage.textContent = ''; // Clear the winner/tie message
+    winnerMessage.style.display = 'none'; // Hide the winner/tie message
     addHoverEffect();
 }
 
@@ -57,8 +63,8 @@ function handleCellClick(event) {
     if (!gameActive) return;
 
     const cell = event.target;
-    const row = cell.dataset.row;
-    const col = cell.dataset.col;
+    const row = parseInt(cell.dataset.row);
+    const col = parseInt(cell.dataset.col);
 
     // Check if the cell is already filled
     if (cell.textContent !== '') {
@@ -81,12 +87,25 @@ function handleCellClick(event) {
     // Check for a win
     const winningCells = checkWin(row, col);
     if (winningCells) {
-        alert(`${currentPlayer} wins!`);
+        const winnerMessage = document.getElementById('winner-message');
+        winnerMessage.textContent = `${currentPlayer} wins!`;
+        winnerMessage.style.display = 'block'; // Show the winner message
         gameActive = false;
         highlightWinningCells(winningCells);
         removeHoverEffect();
+        updateScore(currentPlayer);
         return;
     }
+    // Check for a tie
+    if (board.flat().every(cell => cell !== '')) {
+        const winnerMessage = document.getElementById('winner-message');
+        winnerMessage.textContent = `It's a tie!`;
+        winnerMessage.style.display = 'block'; // Show the tie message
+        gameActive = false;
+        removeHoverEffect();
+        return;
+    }
+
 
     // Switch players
     currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
@@ -134,4 +153,13 @@ function addHoverEffect() {
     cells.forEach(cell => {
         cell.classList.add('cell-hover');
     });
+}
+function updateScore(winner) {
+    if (winner === 'X') {
+        xWins++;
+        document.getElementById('x-wins').textContent = xWins;
+    } else if (winner === 'O') {
+        oWins++;
+        document.getElementById('o-wins').textContent = oWins;
+    }
 }
